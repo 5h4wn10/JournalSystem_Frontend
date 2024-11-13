@@ -1,7 +1,7 @@
 // src/components/StaffDashboard.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, navigate} from 'react';
 import axiosInstance from '../../../axiosConfig';
-
+import '../../styles/Dashboard.css';
 function StaffDashboard() {
     const [patients, setPatients] = useState([]);
 
@@ -17,9 +17,16 @@ function StaffDashboard() {
         fetchPatients();
     }, []);
 
+    const handleLogout = () => {
+        // Rensa alla autentiseringsuppgifter och navigera till login
+        axiosInstance.defaults.headers.common['Authorization'] = '';
+        navigate('/login');
+    };
+
     return (
         <div>
             <h2>Staff Dashboard</h2>
+            <button onClick={handleLogout} className="button logout-button">Log out</button>
             <h3>Patient List</h3>
             <ul>
                 {patients.map((patient) => (

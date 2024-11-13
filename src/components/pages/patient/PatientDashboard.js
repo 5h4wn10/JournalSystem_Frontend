@@ -1,7 +1,7 @@
 // src/components/PatientDashboard.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, handleLogout, navigate} from 'react';
 import axiosInstance from '../../../axiosConfig';
-
+import '../../styles/Dashboard.css';
 function PatientDashboard() {
     const [observations, setObservations] = useState([]);
 
@@ -17,9 +17,16 @@ function PatientDashboard() {
         fetchObservations();
     }, []);
 
+    const handleLogout = () => {
+        // Rensa alla autentiseringsuppgifter och navigera till login
+        axiosInstance.defaults.headers.common['Authorization'] = '';
+        navigate('/login');
+    };
+
     return (
         <div>
             <h2>Patient Dashboard</h2>
+            <button onClick={handleLogout} className="button logout-button">Log out</button>
             <h3>Your Observations</h3>
             <ul>
                 {observations.map((obs) => (

@@ -1,6 +1,7 @@
 // src/components/DoctorDashboard.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, navigate} from 'react';
 import axiosInstance from '../../../axiosConfig';
+import '../../styles/Dashboard.css';
 
 function DoctorDashboard() {
     const [observations, setObservations] = useState([]);
@@ -34,9 +35,15 @@ function DoctorDashboard() {
         }
     };
 
+    const handleLogout = () => {
+        // Rensa alla autentiseringsuppgifter och navigera till login
+        axiosInstance.defaults.headers.common['Authorization'] = '';
+        navigate('/login');
+    };
     return (
-        <div>
+        <div className="container">
             <h2>Doctor Dashboard</h2>
+            <button onClick={handleLogout} className="button logout-button">Log out</button>
             <h3>Observations</h3>
             <ul>
                 {observations.map((obs) => (
@@ -49,19 +56,22 @@ function DoctorDashboard() {
                     placeholder="Patient ID"
                     value={patientId}
                     onChange={(e) => setPatientId(e.target.value)}
+                    className="input"
                 />
                 <input
                     type="text"
                     placeholder="Observation Details"
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
+                    className="input"
                 />
                 <input
                     type="date"
                     value={observationDate}
                     onChange={(e) => setObservationDate(e.target.value)}
+                    className="input"
                 />
-                <button onClick={addObservation}>Add Observation</button>
+                <button onClick={addObservation} className="button">Add Observation</button>
             </div>
         </div>
     );
