@@ -1,6 +1,6 @@
 // src/components/StaffDashboard.js
 import React, { useState, useEffect, navigate} from 'react';
-import axiosInstance from '../../../axiosConfig';
+import axiosInstance from '../../axiosConfig';
 import '../../styles/Dashboard.css';
 function StaffDashboard() {
     const [patients, setPatients] = useState([]);

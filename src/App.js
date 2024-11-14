@@ -1,14 +1,10 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
-import Login from './components/Login';
-import Register from './components/Register';
-import DoctorDashboard from './components/pages/doctor/DoctorDashboard';
-import StaffDashboard from './components/pages/staff/StaffDashboard';
-import PatientDashboard from './components/pages/patient/PatientDashboard';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import DoctorDashboard from './pages/doctor/DoctorDashboard';
+import PatientDetailPage from './pages/doctor/PatientDetailsPage';
 import ProtectedRoute from './common/ProtectedRoute';
-import { UserProvider } from './UserContext';  // Importera UserProvider
-
+import { UserProvider } from './UserContext';
 function App() {
     return (
         <UserProvider>
@@ -17,9 +13,22 @@ function App() {
                     <Route path="/" element={<Navigate to="/login" />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/doctor/dashboard" element={<ProtectedRoute role="DOCTOR"><DoctorDashboard /></ProtectedRoute>} />
-                    <Route path="/staff/dashboard" element={<ProtectedRoute role="STAFF"><StaffDashboard /></ProtectedRoute>} />
-                    <Route path="/patient/dashboard" element={<ProtectedRoute role="PATIENT"><PatientDashboard /></ProtectedRoute>} />
+                    <Route
+                        path="/doctor/dashboard"
+                        element={
+                            <ProtectedRoute role="DOCTOR">
+                                <DoctorDashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/doctor/patient/:patientId"
+                        element={
+                            <ProtectedRoute role="DOCTOR">
+                                <PatientDetailPage />
+                            </ProtectedRoute>
+                        }
+                    />
                 </Routes>
             </Router>
         </UserProvider>

@@ -28,3 +28,21 @@
 .logout-button:hover {
     background-color: #d32f2f;
 }
+
+.patient-list {
+    list-style: none;
+    padding: 0;
+}
+
+.patient-list li {
+    padding: 10px;
+    background-color: #e0f7fa;
+    border: 1px solid #b2ebf2;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.patient-list li:hover {
+    background-color: #b2ebf2;
+}
+

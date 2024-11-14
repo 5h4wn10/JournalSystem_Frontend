@@ -1,6 +1,6 @@
 // src/components/PatientDashboard.js
 import React, { useState, useEffect, handleLogout, navigate} from 'react';
-import axiosInstance from '../../../axiosConfig';
+import axiosInstance from '../../axiosConfig';
 import '../../styles/Dashboard.css';
 function PatientDashboard() {
     const [observations, setObservations] = useState([]);

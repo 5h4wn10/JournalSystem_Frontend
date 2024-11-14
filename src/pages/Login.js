@@ -3,21 +3,25 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance, { setAuthHeader } from '../axiosConfig';
 import { useUser } from '../UserContext';
-import './styles/Login.css';
+import '../styles/Login.css';
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
-    const { setUserRole } = useUser();
+    const { setUserRole } = useUser();  // Använd setUserRole från UserContext
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axiosInstance.post('/api/auth/login', { username, password });
+            const response = await axiosInstance.post('/api/auth/login', {
+                username,
+                password,
+            });
+
             setAuthHeader(username, password);
-            setMessage('Login successful');
+            setMessage(response.data.message);
 
             const roles = response.data.roles;
             if (roles.includes("DOCTOR")) {
@@ -37,7 +41,7 @@ function Login() {
     };
 
     return (
-        <div className="container">
+        <div>
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
                 <input
@@ -46,7 +50,6 @@ function Login() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="input"
                 />
                 <input
                     type="password"
@@ -54,12 +57,8 @@ function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="input"
                 />
-                <button type="submit" className="button">Login</button>
-                <button type="button" onClick={() => navigate('/register')} className="link-button">
-                    Register
-                </button>
+                <button type="submit">Login</button>
             </form>
             <p>{message}</p>
         </div>
