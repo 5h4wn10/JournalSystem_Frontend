@@ -16,10 +16,10 @@
     border: 1px solid #ccc;
 }
 
-.button {
+.button-register{
     width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: #4c60af;
     color: white;
     border: none;
     border-radius: 5px;
@@ -28,8 +28,8 @@
     margin-top: 10px;
 }
 
-.button:hover {
-    background-color: #45a049;
+.button-register:hover {
+    background-color: #7674bf;
 }
 
 .secondary-button {

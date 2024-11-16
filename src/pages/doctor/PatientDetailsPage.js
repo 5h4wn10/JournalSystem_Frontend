@@ -1,53 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosConfig';
 import '../../styles/PatientDetails.css';
+import NavBar from '../../common/NavBar';
 
 function PatientDetailPage() {
+    const navigate = useNavigate(); // Define navigate
     const { patientId } = useParams();
     const [patient, setPatient] = useState(null);
+    const [observations, setObservations] = useState([]);
+    const [conditions, setConditions] = useState([]);
     const [message, setMessage] = useState('');
     const [observation, setObservation] = useState('');
-    const [observations, setObservations] = useState([]);
-    const [condition, setCondition] = useState('');
-    const [conditions, setConditions] = useState([]);
     const [observationDate, setObservationDate] = useState('');
-    const [conditionDescription, setConditionDescription] = useState('');
-    const [error, setError] = useState('');
+    const [condition, setCondition] = useState('');
+    const [description, setConditionDescription] = useState('');
 
-    const fetchPatientData = async () => {
+
+    // Fetch patient details, observations, and conditions on component load
+    useEffect(() => {
+        fetchPatientDetails(); // Fetch patient information once
+        fetchObservationsAndConditions(); // Fetch observations and conditions
+    }, [patientId]);
+
+
+    const fetchPatientDetails = async () => {
         try {
-            // Fetch patient details
             const patientResponse = await axiosInstance.get(`/api/patients/${patientId}`);
             setPatient(patientResponse.data);
-
-            // Fetch observations for the patient
-            const observationsResponse = await axiosInstance.get(`/api/observations/patient/${patientId}`);
-            setObservations(observationsResponse.data);
-
-            // Fetch conditions for the patient
-            const conditionsResponse = await axiosInstance.get(`/api/conditions/patient/${patientId}`);
-            setConditions(conditionsResponse.data);
         } catch (error) {
-            console.error('Error fetching patient data:', error);
-            setError('Could not load patient details.');
+            console.error('Error fetching patient details:', error);
         }
     };
 
-    useEffect(() => {
-        fetchPatientData();
-    }, [patientId]);
+    const fetchObservationsAndConditions = async () => {
+        try {
+            const observationResponse = await axiosInstance.get(`/api/observations/patient/${patientId}`);
+            setObservations(observationResponse.data);
+    
+            const conditionResponse = await axiosInstance.get(`/api/conditions/patient/${patientId}`);
+            setConditions(conditionResponse.data);
+        } catch (error) {
+            console.error('Error fetching observations or conditions:', error);
+        }
+    };
 
     const handleAddObservation = async () => {
         try {
-            await axiosInstance.post(`/api/observations/patient/${patientId}`, {
+            const response = await axiosInstance.post(`/api/observations/patient/${patientId}`, {
                 details: observation,
                 observationDate,
             });
-            setObservation('');
+            setObservation(''); // Clear input field
             setObservationDate('');
+            fetchObservationsAndConditions(); // Refetch all observations and conditions
             alert('Observation added successfully');
-            fetchPatientData(); // Refetch data to update the observations list
         } catch (error) {
             alert('Failed to add observation');
             console.error(error);
@@ -56,14 +63,14 @@ function PatientDetailPage() {
 
     const handleAddCondition = async () => {
         try {
-            await axiosInstance.post(`/api/conditions/patient/${patientId}`, {
+            const response = await axiosInstance.post(`/api/conditions/patient/${patientId}`, {
                 name: condition,
-                description: conditionDescription,
+                description,
             });
-            setCondition('');
+            setCondition(''); // Clear input fields
             setConditionDescription('');
+            fetchObservationsAndConditions(); // Refetch all observations and conditions
             alert('Condition added successfully');
-            fetchPatientData(); // Refetch data to update the conditions list
         } catch (error) {
             alert('Failed to add condition');
             console.error(error);
@@ -72,23 +79,27 @@ function PatientDetailPage() {
 
     const handleSendMessage = async () => {
         try {
-            await axiosInstance.post(`/api/messages/patient/${patientId}`, {
+            await axiosInstance.post('/api/messages/send', {
                 content: message,
+                receiverId: selectedReceiverId,
             });
             alert('Message sent successfully');
-            setMessage('');
         } catch (error) {
             alert('Failed to send message');
             console.error(error);
         }
     };
 
+    const handleBack = () => {
+        navigate('/doctor/dashboard');
+    };
+
     return (
         <div className="patient-detail-container">
-            {error && <p className="error-message">{error}</p>}
             {patient ? (
                 <>
-                    <h2>{patient.fullName}</h2>
+                    <NavBar showBackButton={true} onBack={handleBack} />
+                    <h2>{patient.name || patient.fullName}</h2>
                     <p><strong>Personal Number:</strong> {patient.personalNumber}</p>
                     <p><strong>Address:</strong> {patient.address}</p>
                     <p><strong>Date of Birth:</strong> {patient.dateOfBirth}</p>
@@ -121,8 +132,8 @@ function PatientDetailPage() {
                             />
                             <input
                                 type="text"
-                                placeholder="Condition Description"
-                                value={conditionDescription}
+                                placeholder="Condition description"
+                                value={description}
                                 onChange={(e) => setConditionDescription(e.target.value)}
                             />
                             <button onClick={handleAddCondition}>Add Condition</button>
@@ -141,25 +152,28 @@ function PatientDetailPage() {
 
                     {/* Display Observations */}
                     <h3>Observations</h3>
-                    <ul className="observation-list">
+                    <div className="observation-list">
                         {observations.map((obs) => (
-                            <li key={obs.id}>
+                            <div key={obs.id} className="observation-card">
                                 <p><strong>Date:</strong> {obs.observationDate}</p>
                                 <p><strong>Details:</strong> {obs.details}</p>
-                            </li>
+                                <p><strong>Practitioner:</strong> {obs.practitionerName}</p>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
 
                     {/* Display Conditions */}
                     <h3>Conditions</h3>
-                    <ul className="condition-list">
+                    <div className="condition-list">
                         {conditions.map((cond) => (
-                            <li key={cond.id}>
-                                <p><strong>Name:</strong> {cond.name}</p>
-                                <p><strong>Description:</strong> {cond.description}</p>
-                            </li>
+                            <div key={cond.id} className="condition-card">
+                                <p><strong>Name:</strong> {cond.conditionName}</p>
+                                <p><strong>Description:</strong> {cond.conditionDescription}</p>
+                                <p><strong>Practitioner:</strong> {cond.practitionerName}</p>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
+
                 </>
             ) : (
                 <p>Loading patient details...</p>

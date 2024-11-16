@@ -1,0 +1,26 @@
+.messages-container {
+    padding: 20px;
+}
+
+.messages-list {
+    margin-bottom: 20px;
+}
+
+.message-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.new-message-form {
+    margin-top: 20px;
+}
+
+.receiver-select, .message-input, .send-button {
+    display: block;
+    margin: 10px 0;
+    width: 100%;
+    padding: 10px;
+}

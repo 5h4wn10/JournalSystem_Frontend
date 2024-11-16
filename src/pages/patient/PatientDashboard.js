@@ -1,38 +1,97 @@
-// src/components/PatientDashboard.js
-import React, { useState, useEffect, handleLogout, navigate} from 'react';
+// src/pages/patient/PatientDashboard.js
+import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../axiosConfig';
-import '../../styles/Dashboard.css';
+import '../../styles/PatientDashboard.css';
+import NavBar from '../../common/NavBar';
+
 function PatientDashboard() {
+    const [patient, setPatient] = useState(null);
     const [observations, setObservations] = useState([]);
+    const [conditions, setConditions] = useState([]);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchObservations = async () => {
+        const fetchPatientData = async () => {
             try {
-                const response = await axiosInstance.get('/api/observations');
-                setObservations(response.data);
+                // Fetch patient details
+                const patientResponse = await axiosInstance.get(`/api/patients/me`);
+                setPatient(patientResponse.data);
+
+                // Fetch observations specific to the patient
+                const observationResponse = await axiosInstance.get(`/api/observations/patient/${patientResponse.data.id}`);
+                setObservations(observationResponse.data);
+
+                // Fetch conditions specific to the patient
+                const conditionResponse = await axiosInstance.get(`/api/conditions/patient/${patientResponse.data.id}`);
+                setConditions(conditionResponse.data);
             } catch (error) {
-                console.error('Error fetching observations:', error);
+                console.error('Error fetching patient data:', error);
+                setError('Could not load all patient data');
             }
         };
-        fetchObservations();
+
+        fetchPatientData();
     }, []);
 
-    const handleLogout = () => {
-        // Rensa alla autentiseringsuppgifter och navigera till login
-        axiosInstance.defaults.headers.common['Authorization'] = '';
-        navigate('/login');
-    };
-
     return (
-        <div>
-            <h2>Patient Dashboard</h2>
-            <button onClick={handleLogout} className="button logout-button">Log out</button>
-            <h3>Your Observations</h3>
-            <ul>
-                {observations.map((obs) => (
-                    <li key={obs.id}>{obs.details}</li>
-                ))}
-            </ul>
+        <div className="patient-dashboard-container">
+            <NavBar /> {/* Add NavBar with just Logout button */} 
+            <div className="patient-dashboard-container">
+        {/* Existing dashboard content */}
+            <button onClick={() => navigate('/patient/send-message')} className="button-send-message">
+                Send a Message
+            </button>
+        </div>
+            <h2>My Dashboard</h2>
+            {error && <p className="error-message">{error}</p>}
+
+            {patient ? (
+                <>
+                    <div className="patient-info">
+                        <h3>Your Personal Information</h3>
+                        <p><strong>Full Name:</strong> {patient.name || patient.fullName}</p>
+                        <p><strong>Personal Number:</strong> {patient.personalNumber}</p>
+                        <p><strong>Address:</strong> {patient.address}</p>
+                        <p><strong>Date of Birth:</strong> {patient.dateOfBirth}</p>
+                    </div>
+
+                    <div className="observations-section">
+                        <h3>Observations</h3>
+                        {observations.length > 0 ? (
+                            <ul className="observation-list">
+                                {observations.map((obs) => (
+                                    <li key={obs.id} className="observation-item">
+                                        <p><strong>Date:</strong> {obs.observationDate}</p>
+                                        <p><strong>Details:</strong> {obs.details}</p>
+                                        <p><strong>Doctor:</strong> {obs.practitionerName || 'Unknown'}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No observations available.</p>
+                        )}
+                    </div>
+
+                    <div className="conditions-section">
+                        <h3>Your Conditions</h3>
+                        {conditions.length > 0 ? (
+                            <ul className="condition-list">
+                                {conditions.map((cond) => (
+                                    <li key={cond.id} className="condition-item">
+                                        <p><strong>Condition:</strong> {cond.conditionName}</p>
+                                        <p><strong>Description:</strong> {cond.conditionDescription}</p>
+                                        <p><strong>Doctor:</strong> {cond.practitionerName || 'Unknown'}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No conditions available.</p>
+                        )}
+                    </div>
+                </>
+            ) : (
+                <p>Loading your information...</p>
+            )}
         </div>
     );
 }

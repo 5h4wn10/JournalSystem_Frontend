@@ -2,6 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosConfig';
 import '../../styles/Dashboard.css';
+import NavBar from '../../common/NavBar';
 
 function DoctorDashboard() {
     const [patients, setPatients] = useState([]);
@@ -27,6 +28,7 @@ function DoctorDashboard() {
 
     return (
         <div className="dashboard-container">
+            <NavBar /> {/* Add NavBar with just Logout button */}
             <h2>Doctor Dashboard</h2>
             <h3>All Patients</h3>
             {error && <p className="error-message">{error}</p>}

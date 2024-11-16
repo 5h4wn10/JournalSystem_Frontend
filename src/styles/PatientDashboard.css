@@ -1,0 +1,40 @@
+/* src/styles/PatientDashboard.css */
+.patient-dashboard-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.patient-info, .observations-section, .conditions-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+}
+
+h3 {
+    color: #333;
+    font-weight: bold;
+}
+
+.observation-list, .condition-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.observation-item, .condition-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #e9f5ff;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}

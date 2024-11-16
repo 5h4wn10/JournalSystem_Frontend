@@ -30,3 +30,28 @@ button {
 button:hover {
     background-color: #45a049;
 }
+
+/* För en tydlig layout med separata kort */
+.observation-list, .condition-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.observation-card, .condition-card {
+    background-color: #f9f9f9; /* Ljusa kort för kontrast */
+    border: 1px solid #ddd; /* Tunn grå kant för tydlighet */
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Lätt skugga för djup */
+}
+
+.observation-card p, .condition-card p {
+    margin: 5px 0;
+    color: #333; /* Tydlig textfärg */
+}
+
+.observation-card strong, .condition-card strong {
+    color: #4a90e2; /* En accentfärg för att markera fältnamn */
+}

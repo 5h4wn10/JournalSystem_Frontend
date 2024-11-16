@@ -27,6 +27,18 @@
     cursor: pointer;
 }
 
-.button:hover {
-    background-color: #45a049;
+
+.register-button {
+    background-color: #4c60af;
+    color: #fff;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.register-button:hover {
+    background-color: #7674bf;
 }
