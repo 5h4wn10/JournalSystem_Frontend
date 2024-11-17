@@ -78,17 +78,24 @@ function PatientDetailPage() {
     };
 
     const handleSendMessage = async () => {
+        if (!message.trim()) {
+            alert('Please write a message');
+            return;
+        }
+    
         try {
             await axiosInstance.post('/api/messages/send', {
                 content: message,
-                receiverId: selectedReceiverId,
+                receiverId: patient.id, // Använd patientens ID som mottagare
             });
             alert('Message sent successfully');
+            setMessage(''); // Rensa meddelandefältet
         } catch (error) {
             alert('Failed to send message');
             console.error(error);
         }
     };
+    
 
     const handleBack = () => {
         navigate('/doctor/dashboard');
@@ -140,7 +147,7 @@ function PatientDetailPage() {
                         </div>
 
                         <div>
-                            <h4>Send Message</h4>
+                            <h4>Send Message To Patient</h4>
                             <textarea
                                 placeholder="Write your message here"
                                 value={message}

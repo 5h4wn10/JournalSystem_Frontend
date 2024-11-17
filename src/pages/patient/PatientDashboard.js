@@ -37,10 +37,6 @@ function PatientDashboard() {
         <div className="patient-dashboard-container">
             <NavBar /> {/* Add NavBar with just Logout button */} 
             <div className="patient-dashboard-container">
-        {/* Existing dashboard content */}
-            <button onClick={() => navigate('/patient/send-message')} className="button-send-message">
-                Send a Message
-            </button>
         </div>
             <h2>My Dashboard</h2>
             {error && <p className="error-message">{error}</p>}
