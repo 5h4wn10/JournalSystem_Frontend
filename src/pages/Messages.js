@@ -11,18 +11,35 @@ function Messages() {
     const [success, setSuccess] = useState("");
     const [conversation, setConversation] = useState([]);
     const [selectedConversationUser, setSelectedConversationUser] = useState(null);
+    const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
+        fetchCurrentUser(); // Hämta inloggat användar-ID vid inladdning
         fetchMessages();
         fetchReceivers();
     }, []);
 
+    const fetchCurrentUser = async () => {
+        try {
+            const response = await axiosInstance.get("/api/users/current");
+            setCurrentUserId(response.data.id); // Spara användarens ID i state
+        } catch (error) {
+            setError("Failed to fetch current user");
+            console.error(error);
+        }
+    };
+
     const fetchMessages = async () => {
         try {
             const response = await axiosInstance.get("/api/messages");
-            setMessages(response.data);
+            setMessages(
+                response.data.sort(
+                    (a, b) => new Date(b.sentAt) - new Date(a.sentAt)
+                )
+            );
         } catch (error) {
             setError("Failed to load messages");
+            console.error(error);
         }
     };
 
@@ -32,6 +49,7 @@ function Messages() {
             setReceivers(response.data);
         } catch (error) {
             setError("Failed to load receivers");
+            console.error(error);
         }
     };
 
@@ -50,18 +68,33 @@ function Messages() {
             fetchMessages();
         } catch (error) {
             setError("Failed to send message");
+            console.error(error);
         }
     };
 
-    const fetchConversation = async (userId) => {
-        try {
-            const response = await axiosInstance.get(`/api/messages/conversation/${userId}`);
-            setConversation(response.data);
-            setSelectedConversationUser(userId);
-        } catch (error) {
-            setError("Failed to load conversation");
-        }
-    };
+    const fetchConversation = async (userId2) => {
+    if (!currentUserId) {
+        setError("Current user ID not found");
+        return;
+    }
+    try {
+        const response = await axiosInstance.get("/api/messages/conversation", {
+            params: {
+                userId1: currentUserId, // Använd aktuellt användar-ID
+                userId2: userId2,
+            },
+        });
+        setConversation(
+            response.data.sort(
+                (a, b) => new Date(a.sentAt) - new Date(b.sentAt)
+            )
+        );
+        setSelectedConversationUser(userId2);
+    } catch (error) {
+        setError("Failed to load conversation");
+        console.error(error);
+    }
+};
 
     const handleReply = async () => {
         if (!messageContent) {
@@ -78,25 +111,8 @@ function Messages() {
             fetchConversation(selectedConversationUser);
         } catch (error) {
             setError("Failed to send reply");
+            console.error(error);
         }
-    };
-
-    const handleDeleteMessage = async (messageId) => {
-        try {
-            await axiosInstance.delete(`/api/messages/${messageId}`);
-            setSuccess("Message deleted successfully");
-            fetchMessages();
-            if (selectedConversationUser) {
-                fetchConversation(selectedConversationUser);
-            }
-        } catch (error) {
-            setError("Failed to delete message");
-        }
-    };
-
-    const handleLogout = () => {
-        axiosInstance.defaults.headers.common["Authorization"] = "";
-        window.location.href = "/login";
     };
 
     return (
@@ -107,9 +123,6 @@ function Messages() {
                     Go Back
                 </button>
                 <h1>Messages</h1>
-                <button className="logout-button" onClick={handleLogout}>
-                    Logout
-                </button>
             </div>
 
             {error && <p className="error-message">{error}</p>}
@@ -148,7 +161,7 @@ function Messages() {
                                     <p>
                                         <strong>From:</strong> {msg.senderName}
                                     </p>
-                                    <p>{msg.content}</p>
+                                    <p>Latest message: {msg.content}</p>
                                     <p>
                                         <small>Sent at: {new Date(msg.sentAt).toLocaleString()}</small>
                                     </p>
@@ -156,13 +169,7 @@ function Messages() {
                                         className="reply-button"
                                         onClick={() => fetchConversation(msg.senderId)}
                                     >
-                                        Reply
-                                    </button>
-                                    <button
-                                        className="delete-button"
-                                        onClick={() => handleDeleteMessage(msg.id)}
-                                    >
-                                        Delete
+                                        View Conversation
                                     </button>
                                     <hr />
                                 </li>
