@@ -28,7 +28,7 @@ function DoctorDashboard() {
 
     return (
         <div className="dashboard-container">
-            <NavBar /> {/* Add NavBar with just Logout button */}
+            <NavBar /> {/* Add NavBar with just logout button and message button */}
             <h2>Doctor Dashboard</h2>
             <h3>All Patients</h3>
             {error && <p className="error-message">{error}</p>}
