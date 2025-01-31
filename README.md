@@ -1,70 +1,85 @@
-# Getting Started with Create React App
+# Fullstack Medical Journaling System - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+The **Frontend** of the Fullstack Medical Journaling System is a **React.js** application designed to provide an intuitive interface for managing patient records and medical data. It interacts with a **Spring Boot backend** via REST API and supports role-based access for **patients, doctors, and staff**.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **User Authentication & Role-Based Access**
+  - Patients, doctors, and staff have distinct permissions.
+- **Patient Information Management**
+  - Doctors and staff can add observations and diagnoses.
+  - Patients can view their own medical records.
+- **Messaging System**
+  - Patients can send messages to doctors/staff and receive replies.
+  - Doctors/staff can view and respond to messages.
+- **Responsive UI**
+  - Designed for both desktop and mobile devices.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Technologies Used
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **React.js** (Component-based UI framework)
+- **React Router** (Navigation management)
+- **Redux (Optional)** (State management)
+- **Axios** (REST API communication)
+- **Bootstrap/Material UI** (Styling and UI components)
+- **Docker** (Containerization)
 
-### `npm test`
+## Installation & Setup
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
 
-### `npm run build`
+Ensure you have the following installed:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Node.js (Latest LTS version)**
+- **Docker** (if using containerized setup)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Running Locally
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/yourusername/frontend-medical-system.git
+   cd frontend-medical-system
+   ```
+2. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+3. **Run the application:**
+   ```sh
+   npm start
+   ```
+4. **Access the application:**
+   - Open `http://localhost:3000` in a web browser.
 
-### `npm run eject`
+### Running with Docker
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+If using Docker to run the frontend:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```sh
+   docker build -t frontend-medical-system .
+   docker run -p 3000:3000 frontend-medical-system
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Backend Integration
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- The frontend communicates with a **Spring Boot backend**.
+- API base URL is configured in `src/config.js` (or `.env` file).
+- Ensure the backend is running at `http://localhost:8080/api`.
+- Authentication and authorization handled via **Spring Security**.
 
-## Learn More
+## Deployment
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+For production builds:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```sh
+npm run build
+```
 
-### Code Splitting
+The build files will be generated in the `build/` folder and can be deployed on a server.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Note:** Ensure the backend is running before testing frontend features.
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
